@@ -15,16 +15,21 @@
 package org.printtech.printaddin;
 
 import android.app.Activity;
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 import java.util.UUID;
 
 // SAMPLE 3
@@ -52,6 +57,9 @@ public class PrintApp implements Runnable {
 
   public void bluetoothPrint(String address, String data)
   {
+    if (!ensureBluetoothPermissions()) {
+      return;
+    }
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     if (bluetoothAdapter == null) {
       Log.e("PrintApp", "Bluetooth not supported");
@@ -73,6 +81,75 @@ public class PrintApp implements Runnable {
     } catch (IOException e) {
       Log.e("PrintApp", "Error printing", e);
     }
+  }
+
+  public String getPairedDevices(boolean onlyPrinters)
+  {
+    if (!ensureBluetoothPermissions()) {
+      return "";
+    }
+    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+      return "";
+    }
+
+    Set<BluetoothDevice> devices;
+    try {
+      devices = bluetoothAdapter.getBondedDevices();
+    } catch (SecurityException ex) {
+      Log.e("PrintApp", "Bluetooth permission missing", ex);
+      return "";
+    }
+    if (devices == null || devices.isEmpty()) {
+      return "";
+    }
+
+    StringBuilder builder = new StringBuilder();
+    for (BluetoothDevice device : devices) {
+      if (onlyPrinters && !isPrinter(device)) {
+        continue;
+      }
+      String name;
+      String address;
+      try {
+        name = device.getName() == null ? "" : device.getName();
+        address = device.getAddress() == null ? "" : device.getAddress();
+      } catch (SecurityException ex) {
+        Log.e("PrintApp", "Bluetooth permission missing", ex);
+        continue;
+      }
+      if (builder.length() > 0) {
+        builder.append("\n");
+      }
+      builder.append(name).append("|").append(address);
+    }
+
+    return builder.toString();
+  }
+
+  private boolean ensureBluetoothPermissions()
+  {
+    if (Build.VERSION.SDK_INT < 31) {
+      return true;
+    }
+
+    if (m_Activity.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+      return true;
+    }
+
+    m_Activity.requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1001);
+    return false;
+  }
+
+  private boolean isPrinter(BluetoothDevice device)
+  {
+    BluetoothClass btClass = device.getBluetoothClass();
+    if (btClass == null) {
+      return false;
+    }
+
+    int major = btClass.getMajorDeviceClass();
+    return major == BluetoothClass.Device.Major.IMAGING;
   }
 
   public native void testScreenActions();

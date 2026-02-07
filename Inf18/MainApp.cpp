@@ -40,7 +40,7 @@ void MainApp::Initialize(IAddInDefBaseEx* cnn)
 		if (helper)
 		{
 			WCHAR_T* className = nullptr;
-			convToShortWchar(&className, L"org.ripreal.androidutils.MainApp");
+			convToShortWchar(&className, L"org.printtech.printaddin.PrintApp");
 			jclass ccloc = helper->FindClass(className);
 			delete[] className;
 			className = nullptr;
@@ -75,6 +75,23 @@ void MainApp::bluetoothPrint(const std::wstring& address, const std::wstring& da
 		env->DeleteLocalRef(jAddress);
 		env->DeleteLocalRef(jData);
 	}
+}
+
+std::wstring MainApp::getPairedDevices(bool onlyPrinters)
+{
+	if (!obj)
+		return std::wstring();
+
+	JNIEnv* env = getJniEnv();
+	jmethodID methID = env->GetMethodID(cc, "getPairedDevices", "(Z)Ljava/lang/String;");
+	if (!methID)
+		return std::wstring();
+
+	jstring result = (jstring)env->CallObjectMethod(obj, methID, (jboolean)onlyPrinters);
+	std::wstring list = jstring2wstring(env, result);
+	if (result)
+		env->DeleteLocalRef(result);
+	return list;
 }
 
 void MainApp::sleep(long delay) {

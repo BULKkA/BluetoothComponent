@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.printtech.printaddin'
     compileSdkVersion 34
+    ndkVersion "26.1.10909125"
     defaultConfig {
         applicationId "org.printtech.printaddin"
         minSdkVersion 24

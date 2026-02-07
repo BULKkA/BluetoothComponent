@@ -41,6 +41,7 @@ public:
 	void Initialize(IAddInDefBaseEx*);
 
 	void bluetoothPrint(const std::wstring& address, const std::wstring& data);
+	std::wstring getPairedDevices(bool onlyPrinters);
 
 	void sleep(long delay);
 	void startScreenWatch() const; // Start monitoring lock state

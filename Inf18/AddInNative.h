@@ -31,7 +31,8 @@ public:
 
     enum Methods
     {
-		eMethBluetoothPrint = 0,
+    eMethBluetoothPrint = 0,
+    eMethGetDevices,
 		eMethLast       // Always last
     };
 

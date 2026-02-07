@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <bundle xmlns="http://v8.1c.ru/8.2/addin/bundle" name="org_printtech_printaddin">
-  <component os="Android" path="printAddin_ARM.so" codeType="c++" type="native" arch="ARM"/>
-  <component os="Android" path="printAddin_x86.so" codeType="c++" type="native" arch="i386"/>
-  <component os="Android" path="org_printtech_printaddin-debug.apk" codeType="java" type="native" arch="ARM"/>
-  <component os="Android" path="org_printtech_printaddin-debug.apk" codeType="java" type="native" arch="i386"/>
+  <component os="Android" path="printAddin_ARM.so" codeType="c++" type="native" arch="ARM64"/>
+  <component os="Android" path="org_printtech_printaddin-release-unsigned.apk" codeType="java" type="native" arch="ARM64"/>
 </bundle>

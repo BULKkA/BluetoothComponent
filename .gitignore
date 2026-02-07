@@ -10,6 +10,10 @@
 *.userosscache
 *.so
 *.zip
+FILE_DESCRIPTIONS.txt
+
+# Android Studio native build cache
+.cxx/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -31,13 +31,15 @@ static const wchar_t* g_PropNamesRu[] =
 
 static const wchar_t *g_MethodNames[] =
 {
-	L"BluetoothPrint"
+	L"BluetoothPrint",
+	L"GetDevices"
 };
 
 
 static const wchar_t *g_MethodNamesRu[] =
 {
-	L"ПечатьБлютуз"
+	L"ПечатьБлютуз",
+	L"ПолучитьСписокУстройств"
 };
 
 static const wchar_t g_ComponentNameAddIn[] = L"PRINTADDIN";
@@ -297,6 +299,8 @@ long AddInNative::GetNParams(const long lMethodNum)
 	{
 	case eMethBluetoothPrint:
 		return 2;
+	case eMethGetDevices:
+		return 1;
 	default:
 		return 0;
 	}
@@ -307,6 +311,14 @@ bool AddInNative::GetParamDefValue(const long lMethodNum, const long lParamNum,	
 {
 	switch (lMethodNum)
 	{
+	case eMethGetDevices:
+		if (lParamNum == 0)
+		{
+			TV_VT(pvarParamDefValue) = VTYPE_BOOL;
+			pvarParamDefValue->bVal = false;
+			return true;
+		}
+		return false;
 	default:
 		return false;
 	}
@@ -317,6 +329,8 @@ bool AddInNative::HasRetVal(const long lMethodNum)
 {
 	switch (lMethodNum)
 	{
+	case eMethGetDevices:
+		return true;
 	default:
 		return false;
 	}
@@ -359,6 +373,20 @@ bool AddInNative::CallAsFunc(const long lMethodNum, tVariant* pvarRetValue, tVar
 {
 	switch (lMethodNum)
 	{
+	case eMethGetDevices:
+	{
+		bool onlyPrinters = false;
+		if (lSizeArray >= 1)
+		{
+			if (paParams[0].vt == VTYPE_BOOL)
+				onlyPrinters = paParams[0].bVal != 0;
+			else if (isNumericParameter(&paParams[0]))
+				onlyPrinters = numericValue(&paParams[0]) != 0;
+		}
+		std::wstring list = javaMainApp.getPairedDevices(onlyPrinters);
+		ToV8String(list.c_str(), pvarRetValue);
+		return true;
+	}
 		default:
 			return false;
 	}
