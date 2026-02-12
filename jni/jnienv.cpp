@@ -57,9 +57,3 @@ extern "C" JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* aJavaVM, void* aReserved)
 	sJavaVM = NULL;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_nativePackage_nativeLib_AddInNativeClass_NativeTrace(JNIEnv* jenv, jclass aClass, jstring aStr)
-{
-    const char* jchars = jenv->GetStringUTFChars(aStr, NULL); 
-    trace(jchars);
-    jenv->ReleaseStringUTFChars(aStr, jchars); 
-}

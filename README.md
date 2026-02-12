@@ -5,6 +5,10 @@
 - Visual Studio solution для C++ (androidUtils.sln)
 - Android Studio/Gradle проект (android/)
 
+## Источник/прототип
+Компонента создана на основе примера из доклада «Making external components for 1C mobile platform for Android» (INFOSTART 2018).
+"https://github.com/ripreal/androidUtils1cExt"
+
 ## Требования
 - Android Studio (актуальная версия)
 - Android SDK + NDK (clang)

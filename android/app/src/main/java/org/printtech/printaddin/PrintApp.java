@@ -1,14 +1,11 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Examples for the report "Making external components for 1C mobile platform for Android""
-// at the conference INFOSTART 2018 EVENT EDUCATION https://event.infostart.ru/2018/
+// BluetoothComponent: внешняя компонента для мобильной платформы 1С (Android).
+// Реализует JNI-мост и методы печати по Bluetooth и получения списка устройств.
+// Содержит нативную (C++) и Java части, предназначенные для интеграции с 1С.
 //
-// Sample 1: Delay in code
-// Sample 2: Getting device information
-// Sample 3: Device blocking: receiving external event about changing of sceen
-//
-// Copyright: Igor Kisil 2018
+// Copyright: BULKkA
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -20,9 +17,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -31,8 +25,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
-
-// SAMPLE 3
 
 public class PrintApp implements Runnable {
 
@@ -152,7 +144,4 @@ public class PrintApp implements Runnable {
     return major == BluetoothClass.Device.Major.IMAGING;
   }
 
-  public native void testScreenActions();
-
-  public native void testSleep();
 }
