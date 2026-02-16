@@ -32,6 +32,10 @@ public:
     enum Methods
     {
     eMethBluetoothPrint = 0,
+		eMethConnectPrinter,
+		eMethDisconnectPrinter,
+		eMethSetIdleDisconnectMs,
+    eMethSetUseInsecureSocket,
     eMethGetDevices,
 		eMethLast       // Always last
     };

@@ -19,6 +19,12 @@ JNIEnv* getJniEnv()
 
     JNIEnv* env = NULL;
 
+    if (!sJavaVM)
+    {
+        trace("getJniEnv(): JavaVM is null");
+        return NULL;
+    }
+
     switch (sJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6))
     {
         case JNI_OK:

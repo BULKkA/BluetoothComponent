@@ -19,6 +19,7 @@
 #include "../jni/jnienv.h"
 #include "../include/IMemoryManager.h"
 #include <string>
+#include <mutex>
 
 /* Wrapper calling class LockState from java build org.ripreal.androidutils */
 
@@ -28,6 +29,7 @@ private:
 
 	jclass cc;
 	jobject obj;
+	mutable std::mutex jniMutex;
 	std::wstring jstring2wstring(JNIEnv* jenv, jstring aStr);
 
 public:
@@ -41,9 +43,14 @@ public:
 	void Initialize(IAddInDefBaseEx*);
 
 	void bluetoothPrint(const std::wstring& address, const std::wstring& data);
+	void connectPrinter(const std::wstring& address);
+	void disconnectPrinter();
+	void setIdleDisconnectMs(long ms);
+	void setUseInsecureSocket(bool value);
 	std::wstring getPairedDevices(bool onlyPrinters);
 
 	void sleep(long delay);
 	void startScreenWatch() const; // Start monitoring lock state
 	void stopScreenWatch() const; // End of monitoring
+	void Shutdown();
 };

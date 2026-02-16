@@ -19,8 +19,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-            native-lib.cpp
-        ../../../../../Inf18/AddInNative.cpp
+          ../../../../../Inf18/AddInNative.cpp
             ../../../../../jni/jnienv.cpp
             ../../../../../Inf18/ConversionWchar.cpp
             ../../../../../Inf18/MainApp.cpp)

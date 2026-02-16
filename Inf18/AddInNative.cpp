@@ -32,6 +32,10 @@ static const wchar_t* g_PropNamesRu[] =
 static const wchar_t *g_MethodNames[] =
 {
 	L"BluetoothPrint",
+	L"ConnectPrinter",
+	L"DisconnectPrinter",
+	L"SetIdleDisconnectMs",
+	L"SetUseInsecureSocket",
 	L"GetDevices"
 };
 
@@ -39,6 +43,10 @@ static const wchar_t *g_MethodNames[] =
 static const wchar_t *g_MethodNamesRu[] =
 {
 	L"ПечатьБлютуз",
+	L"ПодключитьПринтер",
+	L"ОтключитьПринтер",
+	L"УстановитьТаймаутОтключения",
+	L"ИспользоватьНебезопасныйСокет",
 	L"ПолучитьСписокУстройств"
 };
 
@@ -122,6 +130,7 @@ long AddInNative::GetInfo()
 //---------------------------------------------------------------------------//
 void AddInNative::Done()
 {
+	javaMainApp.Shutdown();
 	m_iConnect = nullptr;
 	m_iMemory = nullptr;
 }
@@ -299,6 +308,14 @@ long AddInNative::GetNParams(const long lMethodNum)
 	{
 	case eMethBluetoothPrint:
 		return 2;
+	case eMethConnectPrinter:
+		return 1;
+	case eMethDisconnectPrinter:
+		return 0;
+	case eMethSetIdleDisconnectMs:
+		return 1;
+	case eMethSetUseInsecureSocket:
+		return 1;
 	case eMethGetDevices:
 		return 1;
 	default:
@@ -363,6 +380,52 @@ bool AddInNative::CallAsProc(const long lMethodNum, tVariant* paParams, const lo
 			}
 			return true;
 		}
+		case eMethConnectPrinter:
+		{
+			if (lSizeArray >= 1)
+			{
+				std::wstring address;
+				if (paParams[0].vt == VTYPE_PWSTR) {
+					wchar_t* wstr = nullptr;
+					convFromShortWchar(&wstr, paParams[0].pwstrVal, paParams[0].wstrLen);
+					address = wstr;
+					delete[] wstr;
+				}
+				javaMainApp.connectPrinter(address);
+			}
+			return true;
+		}
+		case eMethDisconnectPrinter:
+		{
+			javaMainApp.disconnectPrinter();
+			return true;
+		}
+			case eMethSetIdleDisconnectMs:
+			{
+				long ms = 0;
+				if (lSizeArray >= 1)
+				{
+					if (isNumericParameter(&paParams[0]))
+						ms = numericValue(&paParams[0]);
+					else if (paParams[0].vt == VTYPE_BOOL)
+						ms = paParams[0].bVal ? 1 : 0;
+				}
+				javaMainApp.setIdleDisconnectMs(ms);
+				return true;
+			}
+			case eMethSetUseInsecureSocket:
+			{
+				bool value = false;
+				if (lSizeArray >= 1)
+				{
+					if (paParams[0].vt == VTYPE_BOOL)
+						value = paParams[0].bVal != 0;
+					else if (isNumericParameter(&paParams[0]))
+						value = numericValue(&paParams[0]) != 0;
+				}
+				javaMainApp.setUseInsecureSocket(value);
+				return true;
+			}
 		default:
 			return false;
 	}
